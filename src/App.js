@@ -10,17 +10,22 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNumber] = useState('')
-  //const [filtered, setFiltered] = useState(persons)
   const [notification, setNotification] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  console.log('persons', persons)
-  //console.log('filtered', filtered)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [confirmationMessage, setConfirmationMessage] = useState('')
+  const [confirmationCallback, setConfirmationCallback] = useState(null)
+
   useEffect(() => {
     noteService.getAll().then((res) => {
       setPersons(res)
-      //setFiltered(res)
     })
   }, [])
+  // Filter the persons array based on the search query
+  const filteredPersons = persons.filter((person) =>
+    person.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const addPerson = (e) => {
     e.preventDefault()
@@ -31,7 +36,6 @@ const App = () => {
       const newPerson = { name: newName, number: newNumber }
       noteService.create(newPerson).then((response) => {
         setPersons(persons.concat(response))
-        //setFiltered(persons.concat(response))
         setNewName('')
         setNumber('')
         setNotification(`Added ${newName}`)
@@ -43,34 +47,40 @@ const App = () => {
   }
 
   const updatingNum = (id) => {
-    window.confirm(
+    setShowConfirmation(true)
+    setConfirmationMessage(
       `${newName} is already added to phonebook, replace the old number with the new one?`
     )
-    const newPerson = { name: newName, number: newNumber }
-    noteService
-      .update(id, newPerson)
-      .then((returnedNote) => {
-        setPersons(
-          persons.map((person) => (person.id !== id ? person : returnedNote))
-        )
-        setNewName('')
-        setNumber('')
-        setNotification(`The old number of ${newName} is replaced `)
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
-      })
-      //if that person had already been removed
-      .catch((e) => {
-        setErrorMessage(
-          `The information of ${newName} has already been removed, please refresh the page `
-        )
-        setNewName('')
-        setNumber('')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      })
+    setConfirmationCallback(() => () => {
+      const newPerson = { name: newName, number: newNumber }
+      noteService
+        .update(id, newPerson)
+        .then((returnedNote) => {
+          setPersons(
+            persons.map((person) => (person.id !== id ? person : returnedNote))
+          )
+          setShowConfirmation(false)
+          setNewName('')
+          setNumber('')
+          setNotification(`The old number of ${newName} is replaced `)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
+
+        //if that person had already been removed
+        .catch((e) => {
+          setShowConfirmation(false)
+          setErrorMessage(
+            `The information of ${newName} has already been removed, please refresh the page `
+          )
+          setNewName('')
+          setNumber('')
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+    })
   }
   //Check if person already exist in our book(it's not the same as checking function - the difference is target (button and input))
   const checkingExistense = (e) => {
@@ -102,31 +112,41 @@ const App = () => {
   //search for person
   const filterPersons = (e) => {
     const query = e.target.value
-    console.log('query : ', query)
-    let updatedList = []
-    if (query) {
-      updatedList = persons.filter((item) => {
-        return item.name.toLowerCase().includes(query.toLowerCase())
-      })
-    } else {
-      updatedList = persons
-    }
-
-    setPersons(updatedList)
+    setSearchQuery(query)
   }
 
   const deleteNum = (id, name) => {
-    window.confirm(`Delete person ${name}?`)
-
-    noteService.del(id)
-
-    let updated = persons.filter((person) => person.id !== id)
-    setPersons(updated)
-    //setFiltered(updated)
+    setShowConfirmation(true)
+    setConfirmationMessage(`Delete person ${name}?`)
+    setConfirmationCallback(() => () => {
+      noteService.del(id)
+      let updated = persons.filter((person) => person.id !== id)
+      setPersons(updated)
+      setShowConfirmation(false)
+      setNotification(`Person ${name} deleted.`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    })
   }
-
+  const handleConfirmation = () => {
+    if (confirmationCallback) {
+      confirmationCallback()
+      setConfirmationCallback(null)
+    }
+  }
+  console.log('showConfirmation', showConfirmation)
+  console.log('confirmationCallback', confirmationCallback)
   return (
     <div className='container mt-3 w-50 '>
+      {showConfirmation && (
+        <div className='confirmation'>
+          <p className='confirmation-message'>{confirmationMessage}</p>
+          <button className='confirmation-button' onClick={handleConfirmation}>
+            Confirm
+          </button>
+        </div>
+      )}
       <Notification message={notification} />
       <ErrorNotification message={errorMessage} />
       <h2 className='h1'>Phonebook</h2>
@@ -143,7 +163,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons filtered={persons} deleteNum={deleteNum} />
+      <Persons filtered={filteredPersons} deleteNum={deleteNum} />
     </div>
   )
 }
