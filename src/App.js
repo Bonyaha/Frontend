@@ -102,10 +102,15 @@ const App = () => {
   //search for person
   const filterPersons = (e) => {
     const query = e.target.value
-    //console.log(query)
-    let updatedList = persons.filter((item) => {
-      return item.name.toLowerCase().includes(query.toLowerCase())
-    })
+    console.log('query : ', query)
+    let updatedList = []
+    if (query) {
+      updatedList = persons.filter((item) => {
+        return item.name.toLowerCase().includes(query.toLowerCase())
+      })
+    } else {
+      updatedList = persons
+    }
 
     setPersons(updatedList)
   }
