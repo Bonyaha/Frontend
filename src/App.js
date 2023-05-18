@@ -8,8 +8,8 @@ import noteService from './services/notes'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNumber] = useState('')
+  const [name, setName] = useState('')
+  const [number, setNumber] = useState('')
   const [filtered, setFiltered] = useState(persons)
   const [notification, setNotification] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -27,13 +27,13 @@ const App = () => {
     if (id) {
       updatingNum(id)
     } else {
-      const newPerson = { name: newName, number: newNumber }
+      const newPerson = { name: name, number: number }
       noteService.create(newPerson).then((response) => {
         setPersons(persons.concat(response))
         setFiltered(persons.concat(response))
-        setNewName('')
+        setName('')
         setNumber('')
-        setNotification(`Added ${newName}`)
+        setNotification(`Added ${name}`)
         setTimeout(() => {
           setNotification(null)
         }, 5000)
@@ -43,18 +43,18 @@ const App = () => {
 
   const updatingNum = (id) => {
     window.confirm(
-      `${newName} is already added to phonebook, replace the old number with the new one?`
+      `${name} is already added to phonebook, replace the old number with the new one?`
     )
-    const newPerson = { name: newName, number: newNumber }
+    const newPerson = { name: name, number: number }
     noteService
       .update(id, newPerson)
       .then((returnedNote) => {
         setFiltered(
           filtered.map((person) => (person.id !== id ? person : returnedNote))
         )
-        setNewName('')
+        setName('')
         setNumber('')
-        setNotification(`The old number of ${newName} is replaced `)
+        setNotification(`The old number of ${name} is replaced `)
         setTimeout(() => {
           setNotification(null)
         }, 5000)
@@ -62,9 +62,9 @@ const App = () => {
       //if that person had already been removed
       .catch((e) => {
         setErrorMessage(
-          `The information of ${newName} has already been removed, please refresh the page `
+          `The information of ${name} has already been removed, please refresh the page `
         )
-        setNewName('')
+        setName('')
         setNumber('')
         setTimeout(() => {
           setErrorMessage(null)
@@ -74,6 +74,7 @@ const App = () => {
   //Check if person already exist in our book(it's not the same as checking function - the difference is target (button and input))
   const checkingExistense = (e) => {
     e.preventDefault()
+    console.log('e.target', e.target)
     let query = e.target.querySelector('#name').value
     console.log(query)
     const target = persons.find((person) => person.name === query)
@@ -83,7 +84,7 @@ const App = () => {
 
   const handleNameChange = (e) => {
     //console.log(e.target.value);
-    setNewName(e.target.value)
+    setName(e.target.value)
 
     checking(e.target.value)
   }
@@ -131,8 +132,8 @@ const App = () => {
       <h3>Add a new person</h3>
       <PersonForm
         addPerson={addPerson}
-        newName={newName}
-        newNumber={newNumber}
+        name={name}
+        number={number}
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       />
