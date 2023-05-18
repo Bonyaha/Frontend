@@ -5,7 +5,7 @@ import Search from './Search'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
 import noteService from './services/notes'
-
+/* test */
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -13,7 +13,8 @@ const App = () => {
   const [filtered, setFiltered] = useState(persons)
   const [notification, setNotification] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  //console.log(filtered);
+  console.log('persons', persons)
+  console.log('filtered', filtered)
   useEffect(() => {
     noteService.getAll().then((res) => {
       setPersons(res)
@@ -75,7 +76,7 @@ const App = () => {
   const checkingExistense = (e) => {
     e.preventDefault()
     let query = e.target.querySelector('#name').value
-    console.log(query)
+    //console.log(query)
     const target = persons.find((person) => person.name === query)
 
     if (target) return target.id
@@ -101,7 +102,7 @@ const App = () => {
   //search for person
   const filterPersons = (e) => {
     const query = e.target.value
-    console.log(query)
+    //console.log(query)
     let updatedList = persons.filter((item) => {
       return item.name.toLowerCase().includes(query.toLowerCase())
     })
