@@ -10,15 +10,15 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNumber] = useState('')
-  const [filtered, setFiltered] = useState(persons)
+  //const [filtered, setFiltered] = useState(persons)
   const [notification, setNotification] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   console.log('persons', persons)
-  console.log('filtered', filtered)
+  //console.log('filtered', filtered)
   useEffect(() => {
     noteService.getAll().then((res) => {
       setPersons(res)
-      setFiltered(res)
+      //setFiltered(res)
     })
   }, [])
 
@@ -31,7 +31,7 @@ const App = () => {
       const newPerson = { name: newName, number: newNumber }
       noteService.create(newPerson).then((response) => {
         setPersons(persons.concat(response))
-        setFiltered(persons.concat(response))
+        //setFiltered(persons.concat(response))
         setNewName('')
         setNumber('')
         setNotification(`Added ${newName}`)
@@ -50,8 +50,8 @@ const App = () => {
     noteService
       .update(id, newPerson)
       .then((returnedNote) => {
-        setFiltered(
-          filtered.map((person) => (person.id !== id ? person : returnedNote))
+        setPersons(
+          persons.map((person) => (person.id !== id ? person : returnedNote))
         )
         setNewName('')
         setNumber('')
@@ -107,7 +107,7 @@ const App = () => {
       return item.name.toLowerCase().includes(query.toLowerCase())
     })
 
-    setFiltered(updatedList)
+    setPersons(updatedList)
   }
 
   const deleteNum = (id, name) => {
@@ -117,7 +117,7 @@ const App = () => {
 
     let updated = persons.filter((person) => person.id !== id)
     setPersons(updated)
-    setFiltered(updated)
+    //setFiltered(updated)
   }
 
   return (
@@ -138,7 +138,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons filtered={filtered} deleteNum={deleteNum} />
+      <Persons filtered={persons} deleteNum={deleteNum} />
     </div>
   )
 }
