@@ -5,6 +5,11 @@
 body {
   background-color: #424041;
 }
+h2,
+h3,
+label {
+  color: white;
+}
 
 .success {
   background-color: #94edbe;
@@ -23,8 +28,39 @@ body {
   margin-bottom: 10px;
   color: rgb(211, 215, 223);
 }
-h2,
-h3,
-label {
+
+.confirmation {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.confirmation-message {
+  margin-bottom: 5px;
+}
+
+.confirmation-button {
+  background-color: #4caf50;
   color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 2px;
+}
+.close-button {
+  background-color: #f5646d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.confirmation-button:hover {
+  background-color: #45a049;
+}
+.close-button:hover {
+  background-color: #f43e4a;
 }

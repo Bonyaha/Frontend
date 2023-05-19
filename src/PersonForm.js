@@ -1,9 +1,8 @@
 import React from 'react'
 
 const PersonForm = (props) => {
-  let { addPerson, newNumber, handleNameChange, handleNumberChange, newName } =
-    props
-  console.log('newNumber', newNumber)
+  let { addPerson, number, handleNameChange, handleNumberChange, name } = props
+
   return (
     <form onSubmit={addPerson}>
       <div className='row'>
@@ -12,7 +11,7 @@ const PersonForm = (props) => {
             Name:
           </label>
           <input
-            value={newName}
+            value={name}
             placeholder='Enter name'
             name='name'
             id='name'
@@ -27,7 +26,7 @@ const PersonForm = (props) => {
           </label>
           <input
             type='number'
-            value={newNumber}
+            value={number}
             id='number'
             placeholder='Enter number'
             name='number'
