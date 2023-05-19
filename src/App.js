@@ -8,8 +8,8 @@ import noteService from './services/notes'
 /* test */
 const App = () => {
   const [persons, setPersons] = useState([])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNumber] = useState('')
+  const [name, setName] = useState('')
+  const [number, setNumber] = useState('')
   const [notification, setNotification] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -22,6 +22,7 @@ const App = () => {
       setPersons(res)
     })
   }, [])
+
   // Filter the persons array based on the search query
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -33,12 +34,12 @@ const App = () => {
     if (id) {
       updatingNum(id)
     } else {
-      const newPerson = { name: newName, number: newNumber }
+      const newPerson = { name: name, number: number }
       noteService.create(newPerson).then((response) => {
         setPersons(persons.concat(response))
-        setNewName('')
+        setName('')
         setNumber('')
-        setNotification(`Added ${newName}`)
+        setNotification(`Added ${name}`)
         setTimeout(() => {
           setNotification(null)
         }, 5000)
@@ -49,10 +50,10 @@ const App = () => {
   const updatingNum = (id) => {
     setShowConfirmation(true)
     setConfirmationMessage(
-      `${newName} is already added to phonebook, replace the old number with the new one?`
+      `${name} is already added to phonebook, replace the old number with the new one?`
     )
     setConfirmationCallback(() => () => {
-      const newPerson = { name: newName, number: newNumber }
+      const newPerson = { name: name, number: number }
       noteService
         .update(id, newPerson)
         .then((returnedNote) => {
@@ -60,9 +61,9 @@ const App = () => {
             persons.map((person) => (person.id !== id ? person : returnedNote))
           )
           setShowConfirmation(false)
-          setNewName('')
+          setName('')
           setNumber('')
-          setNotification(`The old number of ${newName} is replaced `)
+          setNotification(`The old number of ${name} is replaced `)
           setTimeout(() => {
             setNotification(null)
           }, 5000)
@@ -72,9 +73,9 @@ const App = () => {
         .catch((e) => {
           setShowConfirmation(false)
           setErrorMessage(
-            `The information of ${newName} has already been removed, please refresh the page `
+            `The information of ${name} has already been removed, please refresh the page `
           )
-          setNewName('')
+          setName('')
           setNumber('')
           setTimeout(() => {
             setErrorMessage(null)
@@ -94,7 +95,7 @@ const App = () => {
 
   const handleNameChange = (e) => {
     //console.log(e.target.value);
-    setNewName(e.target.value)
+    setName(e.target.value)
 
     checking(e.target.value)
   }
@@ -128,6 +129,8 @@ const App = () => {
         setNotification(null)
       }, 5000)
     })
+    const confirmationDiv = document.getElementById('confirmationDiv')
+    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
   }
   const handleConfirmation = () => {
     if (confirmationCallback) {
@@ -135,18 +138,30 @@ const App = () => {
       setConfirmationCallback(null)
     }
   }
+  const closeConfirmation = () => {
+    setShowConfirmation(false)
+    setConfirmationCallback(null)
+  }
   console.log('showConfirmation', showConfirmation)
   console.log('confirmationCallback', confirmationCallback)
   return (
     <div className='container mt-3 w-50 '>
-      {showConfirmation && (
-        <div className='confirmation'>
-          <p className='confirmation-message'>{confirmationMessage}</p>
-          <button className='confirmation-button' onClick={handleConfirmation}>
-            Confirm
-          </button>
-        </div>
-      )}
+      <div id='confirmationDiv'>
+        {showConfirmation && (
+          <div className='confirmation'>
+            <p className='confirmation-message'>{confirmationMessage}</p>
+            <button
+              className='confirmation-button'
+              onClick={handleConfirmation}
+            >
+              Confirm
+            </button>
+            <button className='close-button' onClick={closeConfirmation}>
+              Cancel
+            </button>
+          </div>
+        )}
+      </div>
       <Notification message={notification} />
       <ErrorNotification message={errorMessage} />
       <h2 className='h1'>Phonebook</h2>
@@ -157,8 +172,8 @@ const App = () => {
       <h3>Add a new person</h3>
       <PersonForm
         addPerson={addPerson}
-        newName={newName}
-        newNumber={newNumber}
+        name={name}
+        number={number}
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       />

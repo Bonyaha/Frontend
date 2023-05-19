@@ -48,8 +48,19 @@ label {
   padding: 8px 12px;
   cursor: pointer;
   border-radius: 4px;
+  margin-right: 2px;
 }
-
+.close-button {
+  background-color: #f5646d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
 .confirmation-button:hover {
   background-color: #45a049;
+}
+.close-button:hover {
+  background-color: #f43e4a;
 }
