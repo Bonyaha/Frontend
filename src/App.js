@@ -121,18 +121,27 @@ const App = () => {
     setShowConfirmation(true)
     setConfirmationMessage(`Delete person ${name}?`)
     setConfirmationCallback(() => () => {
-      contactService.del(id)
-      let updated = persons.filter((person) => person.id !== id)
-      setPersons(updated)
-      setShowConfirmation(false)
-      setNotification(`Person ${name} deleted.`)
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+      contactService
+        .del(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id))
+          setShowConfirmation(false)
+          setNotification(`Person ${name} deleted.`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
+        .catch((error) => {
+          setErrorMessage(`Error deleting the contact: ${error.message}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     })
     const confirmationDiv = document.getElementById('confirmationDiv')
     confirmationDiv.scrollIntoView({ behavior: 'smooth' })
   }
+
   const handleConfirmation = () => {
     if (confirmationCallback) {
       confirmationCallback()
