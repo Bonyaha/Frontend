@@ -4,8 +4,8 @@ import ErrorNotification from './ErrorNotification'
 import Search from './Search'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
-import noteService from './services/notes'
-/* test */
+import contactService from './services/contacts'
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [name, setName] = useState('')
@@ -18,7 +18,7 @@ const App = () => {
   const [confirmationCallback, setConfirmationCallback] = useState(null)
 
   useEffect(() => {
-    noteService.getAll().then((res) => {
+    contactService.getAll().then((res) => {
       setPersons(res)
     })
   }, [])
@@ -35,7 +35,7 @@ const App = () => {
       updatingNum(id)
     } else {
       const newPerson = { name: name, number: number }
-      noteService.create(newPerson).then((response) => {
+      contactService.create(newPerson).then((response) => {
         setPersons(persons.concat(response))
         setName('')
         setNumber('')
@@ -54,7 +54,7 @@ const App = () => {
     )
     setConfirmationCallback(() => () => {
       const newPerson = { name: name, number: number }
-      noteService
+      contactService
         .update(id, newPerson)
         .then((returnedNote) => {
           setPersons(
@@ -121,7 +121,7 @@ const App = () => {
     setShowConfirmation(true)
     setConfirmationMessage(`Delete person ${name}?`)
     setConfirmationCallback(() => () => {
-      noteService.del(id)
+      contactService.del(id)
       let updated = persons.filter((person) => person.id !== id)
       setPersons(updated)
       setShowConfirmation(false)
