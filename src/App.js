@@ -22,11 +22,16 @@ const App = () => {
       setPersons(res)
     })
   }, [])
-
+  console.log(persons)
   // Filter the persons array based on the search query
-  const filteredPersons = persons.filter((person) =>
-    person.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredPersons = persons.filter((person) => {
+    console.log(`I'm in filteredPersons function`)
+    console.log('person', person)
+    if (person && person.name) {
+      return person.name.toLowerCase().includes(searchQuery.toLowerCase())
+    }
+    return false
+  })
 
   const addPerson = (e) => {
     e.preventDefault()
@@ -35,15 +40,23 @@ const App = () => {
       updatingNum(id)
     } else {
       const newPerson = { name: name, number: number }
-      contactService.create(newPerson).then((response) => {
-        setPersons(persons.concat(response))
-        setName('')
-        setNumber('')
-        setNotification(`Added ${name}`)
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
-      })
+      contactService
+        .create(newPerson)
+        .then((response) => {
+          setPersons(persons.concat(response))
+          setName('')
+          setNumber('')
+          setNotification(`Added ${name}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
+        .catch((error) => {
+          setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
     }
   }
 
@@ -53,10 +66,25 @@ const App = () => {
       `${name} is already added to phonebook, replace the old number with the new one?`
     )
     setConfirmationCallback(() => () => {
+      const personToUpdate = persons.find((person) => person.id === id)
+      if (personToUpdate) {
+      }
       const newPerson = { name: name, number: number }
-      contactService
-        .update(id, newPerson)
-        .then((returnedNote) => {
+      contactService.update(id, newPerson).then((returnedNote) => {
+        if (returnedNote === null) {
+          setShowConfirmation(false)
+          setPersons(
+            persons.map((person) => (person.id !== id ? person : returnedNote))
+          )
+          setErrorMessage(
+            `The information of ${name} has already been removed, please refresh the page`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+          setName('')
+          setNumber('')
+        } else {
           setPersons(
             persons.map((person) => (person.id !== id ? person : returnedNote))
           )
@@ -67,10 +95,12 @@ const App = () => {
           setTimeout(() => {
             setNotification(null)
           }, 5000)
-        })
+        }
+      })
 
-        //if that person had already been removed
-        .catch((e) => {
+      //if that person had already been removed
+      /*  .catch((error) => {
+          console.log(error)
           setShowConfirmation(false)
           setErrorMessage(
             `The information of ${name} has already been removed, please refresh the page `
@@ -80,7 +110,7 @@ const App = () => {
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
-        })
+        }) */
     })
   }
   //Check if person already exist in our book(it's not the same as checking function - the difference is target (button and input))
@@ -98,7 +128,7 @@ const App = () => {
     //console.log(e.target.value);
     setName(e.target.value)
 
-    checking(e.target.value)
+    //checking(e.target.value)
   }
 
   const handleNumberChange = (e) => {
@@ -106,11 +136,11 @@ const App = () => {
   }
 
   //Check if person already exist in our book
-  const checking = (value) => {
+  /*  const checking = (value) => {
     return persons.forEach((person) => {
       if (person.name === value) alert(`${value} is already added to phonebook`)
     })
-  }
+  } */
   //search for person
   const filterPersons = (e) => {
     const query = e.target.value

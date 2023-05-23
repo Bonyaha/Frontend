@@ -25,7 +25,6 @@ const PersonForm = (props) => {
             Number:
           </label>
           <input
-            type='number'
             value={number}
             id='number'
             placeholder='Enter number'
