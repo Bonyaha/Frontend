@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Display = ({ name, number, deleteNum, id, updatingNum }) => {
+const Display = ({ name, number, deleteNum, id, updatingContact }) => {
   const [editing, setEditing] = useState(false)
   const [editName, setEditName] = useState(name)
   const [editNumber, setEditNumber] = useState(number)
@@ -10,7 +10,7 @@ const Display = ({ name, number, deleteNum, id, updatingNum }) => {
   }
 
   const handleSave = () => {
-    updatingNum(id, editName, editNumber)
+    updatingContact(id, editName, editNumber)
     setEditing(false)
   }
 

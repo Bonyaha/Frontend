@@ -34,7 +34,7 @@ const App = () => {
     e.preventDefault()
     let id = checkingExistense(e)
     if (id) {
-      updatingNum(id)
+      updatingContact(id)
     } else {
       const newPerson = { name: name, number: number }
       contactService
@@ -58,7 +58,7 @@ const App = () => {
     scrollToConfirmationDiv()
   }
 
-  const updatingNum = (id, newName = name, newNumber = number) => {
+  const updatingContact = (id, newName = name, newNumber = number) => {
     setShowConfirmation(true)
     setConfirmationMessage(
       newName === name
@@ -204,7 +204,7 @@ const App = () => {
       <Persons
         filtered={filteredPersons}
         deleteNum={deleteNum}
-        updatingNum={updatingNum}
+        updatingContact={updatingContact}
       />
     </div>
   )
