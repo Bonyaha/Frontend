@@ -55,8 +55,7 @@ const App = () => {
           }, 5000)
         })
     }
-    const confirmationDiv = document.getElementById('confirmationDiv')
-    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
+    scrollToConfirmationDiv()
   }
 
   const updatingNum = (id, newName = name, newNumber = number) => {
@@ -105,8 +104,7 @@ const App = () => {
           }, 5000)
         })
     })
-    const confirmationDiv = document.getElementById('confirmationDiv')
-    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
+    scrollToConfirmationDiv()
   }
   //Check if person already exist in our books
   const checkingExistense = (e) => {
@@ -116,7 +114,6 @@ const App = () => {
   }
 
   const handleNameChange = (e) => {
-    //console.log(e.target.value);
     setName(e.target.value)
   }
 
@@ -151,8 +148,7 @@ const App = () => {
           }, 5000)
         })
     })
-    const confirmationDiv = document.getElementById('confirmationDiv')
-    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
+    scrollToConfirmationDiv()
   }
 
   const handleConfirmation = () => {
@@ -166,6 +162,10 @@ const App = () => {
     setConfirmationCallback(null)
   }
 
+  const scrollToConfirmationDiv = () => {
+    const confirmationDiv = document.getElementById('confirmationDiv')
+    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
+  }
   return (
     <div className='container mt-3 w-50 '>
       <div id='confirmationDiv'>
