@@ -55,6 +55,8 @@ const App = () => {
           }, 5000)
         })
     }
+    const confirmationDiv = document.getElementById('confirmationDiv')
+    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
   }
 
   const updatingNum = (id, newName = name, newNumber = number) => {
@@ -103,6 +105,8 @@ const App = () => {
           }, 5000)
         })
     })
+    const confirmationDiv = document.getElementById('confirmationDiv')
+    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
   }
   //Check if person already exist in our books
   const checkingExistense = (e) => {
