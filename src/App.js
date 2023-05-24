@@ -188,7 +188,6 @@ const App = () => {
       <ErrorNotification message={errorMessage} />
       <h2 className='h1'>Phonebook</h2>
       <Search onChange={filterPersons} />
-
       <br />
       <br />
       <h3>Add a new person</h3>
