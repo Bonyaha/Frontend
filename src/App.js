@@ -164,7 +164,9 @@ const App = () => {
 
   const scrollToConfirmationDiv = () => {
     const confirmationDiv = document.getElementById('confirmationDiv')
-    confirmationDiv.scrollIntoView({ behavior: 'smooth' })
+    requestAnimationFrame(() => {
+      confirmationDiv.scrollIntoView({ behavior: 'smooth' })
+    })
   }
   return (
     <div className='container mt-3 w-50 '>
