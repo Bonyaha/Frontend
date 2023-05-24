@@ -22,11 +22,8 @@ const App = () => {
       setPersons(res)
     })
   }, [])
-  console.log(persons)
   // Filter the persons array based on the search query
   const filteredPersons = persons.filter((person) => {
-    console.log(`I'm in filteredPersons function`)
-    console.log('person', person)
     if (person && person.name) {
       return person.name.toLowerCase().includes(searchQuery.toLowerCase())
     }
@@ -60,13 +57,15 @@ const App = () => {
     }
   }
 
-  const updatingNum = (id) => {
+  const updatingNum = (id, newName = name, newNumber = number) => {
     setShowConfirmation(true)
     setConfirmationMessage(
-      `${name} is already added to phonebook, replace the old number with the new one?`
+      newName === name
+        ? `${name} is already added to phonebook, replace the old number with the new one?`
+        : 'Update the contact?'
     )
     setConfirmationCallback(() => () => {
-      const newPerson = { name: name, number: number }
+      const newPerson = { name: newName, number: newNumber }
       contactService
         .update(id, newPerson)
         .then((returnedNote) => {
@@ -74,7 +73,7 @@ const App = () => {
             setShowConfirmation(false)
             setPersons(persons.filter((person) => person.id !== id))
             setErrorMessage(
-              `The information of ${name} has already been removed`
+              `The information of ${newName} has already been removed`
             )
             setTimeout(() => {
               setErrorMessage(null)
@@ -90,7 +89,7 @@ const App = () => {
             setShowConfirmation(false)
             setName('')
             setNumber('')
-            setNotification(`The old number of ${name} is replaced `)
+            setNotification(`The contact of ${newName} has been updated `)
             setTimeout(() => {
               setNotification(null)
             }, 5000)
@@ -162,8 +161,7 @@ const App = () => {
     setShowConfirmation(false)
     setConfirmationCallback(null)
   }
-  console.log('showConfirmation', showConfirmation)
-  console.log('confirmationCallback', confirmationCallback)
+
   return (
     <div className='container mt-3 w-50 '>
       <div id='confirmationDiv'>
@@ -198,7 +196,11 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons filtered={filteredPersons} deleteNum={deleteNum} />
+      <Persons
+        filtered={filteredPersons}
+        deleteNum={deleteNum}
+        updatingNum={updatingNum}
+      />
     </div>
   )
 }

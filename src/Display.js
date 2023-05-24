@@ -1,19 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react'
 
-const Display = ({ name, number, deleteNum, id }) => {
-  //console.log(info);
+const Display = ({ name, number, deleteNum, id, updatingNum }) => {
+  const [editing, setEditing] = useState(false)
+  const [editName, setEditName] = useState(name)
+  const [editNumber, setEditNumber] = useState(number)
+
+  const handleEdit = () => {
+    setEditing(true)
+  }
+
+  const handleSave = () => {
+    updatingNum(id, editName, editNumber)
+    setEditing(false)
+  }
+
+  const handleCancel = () => {
+    // Cancel the editing and revert back to the original values
+    setEditName(name)
+    setEditNumber(number)
+    setEditing(false)
+  }
+
   return (
-    <li className="list-group-item">
-      {name}: {number}{' '}
-      <button
-        type="button"
-        className="btn btn-danger btn-sm"
-        onClick={() => deleteNum(id, name)}
-      >
-        DELETE
-      </button>
+    <li className='list-group-item'>
+      {editing ? (
+        <div>
+          <input
+            type='text'
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+          />
+          <input
+            type='text'
+            value={editNumber}
+            onChange={(e) => setEditNumber(e.target.value)}
+          />
+          <button onClick={handleSave}>Save</button>
+          <button onClick={handleCancel}>Cancel</button>
+        </div>
+      ) : (
+        <div>
+          {name}: {number}{' '}
+          <button
+            type='button'
+            className='btn btn-primary btn-sm'
+            onClick={handleEdit}
+          >
+            Edit
+          </button>{' '}
+          <button
+            type='button'
+            className='btn btn-danger btn-sm'
+            onClick={() => deleteNum(id, name)}
+          >
+            DELETE
+          </button>
+        </div>
+      )}
     </li>
-  );
-};
+  )
+}
 
-export default Display;
+export default Display

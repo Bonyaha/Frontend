@@ -1,7 +1,7 @@
 import React from 'react'
 import Display from './Display'
 
-const Persons = ({ filtered, deleteNum }) => {
+const Persons = ({ filtered, deleteNum, updatingNum }) => {
   return (
     <ol className='list-group list-group-numbered'>
       {filtered.length ? (
@@ -11,6 +11,7 @@ const Persons = ({ filtered, deleteNum }) => {
             name={person.name}
             number={person.number}
             deleteNum={deleteNum}
+            updatingNum={updatingNum}
             id={person.id}
           />
         ))
