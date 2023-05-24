@@ -67,35 +67,48 @@ const App = () => {
     )
     setConfirmationCallback(() => () => {
       const newPerson = { name: name, number: number }
-      contactService.update(id, newPerson).then((returnedNote) => {
-        if (returnedNote === null) {
+      contactService
+        .update(id, newPerson)
+        .then((returnedNote) => {
+          if (returnedNote === null) {
+            setShowConfirmation(false)
+            setPersons(persons.filter((person) => person.id !== id))
+            setErrorMessage(
+              `The information of ${name} has already been removed`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+            setName('')
+            setNumber('')
+          } else {
+            setPersons(
+              persons.map((person) =>
+                person.id !== id ? person : returnedNote
+              )
+            )
+            setShowConfirmation(false)
+            setName('')
+            setNumber('')
+            setNotification(`The old number of ${name} is replaced `)
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
+          }
+        })
+        .catch((error) => {
           setShowConfirmation(false)
-          setPersons(persons.filter((person) => person.id !== id))
-          setErrorMessage(`The information of ${name} has already been removed`)
+          setErrorMessage(`${error.response.data.error}`)
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
-          setName('')
-          setNumber('')
-        } else {
-          setPersons(
-            persons.map((person) => (person.id !== id ? person : returnedNote))
-          )
-          setShowConfirmation(false)
-          setName('')
-          setNumber('')
-          setNotification(`The old number of ${name} is replaced `)
-          setTimeout(() => {
-            setNotification(null)
-          }, 5000)
-        }
-      })
+        })
     })
   }
-  //Check if person already exist in our book(it's not the same as checking function - the difference is target (button and input))
+  //Check if person already exist in our books
   const checkingExistense = (e) => {
     e.preventDefault()
-    const target = persons.find((person) => person.name === searchQuery)
+    const target = persons.find((person) => person.name === name)
     if (target) return target.id
   }
 
