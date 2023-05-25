@@ -69,8 +69,8 @@ const App = () => {
       const newPerson = { name: newName, number: newNumber }
       contactService
         .update(id, newPerson)
-        .then((returnedNote) => {
-          if (returnedNote === null) {
+        .then((returnedContact) => {
+          if (returnedContact === null) {
             setShowConfirmation(false)
             setPersons(persons.filter((person) => person.id !== id))
             setErrorMessage(
@@ -84,7 +84,7 @@ const App = () => {
           } else {
             setPersons(
               persons.map((person) =>
-                person.id !== id ? person : returnedNote
+                person.id !== id ? person : returnedContact
               )
             )
             setShowConfirmation(false)
